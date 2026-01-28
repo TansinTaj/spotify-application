@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tansin Taj - Spotify Marketing Intern Application</title>
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Indie+Flower&display=swap" rel="stylesheet">
+  <style>
+    body { margin: 0; padding: 0; background-color: #000; }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+  
+  <script>
+    // NO BABEL - Pure JavaScript with React.createElement
+    const e = React.createElement;
+    const { useState, useEffect } = React;
+    
+    function SpotifyApp() {
+      return e('div', { className: 'bg-black text-white min-h-screen' },
+        e('div', { className: 'p-20 text-center' },
+          e('h1', { className: 'text-6xl font-black text-green-500 mb-4' }, 'Tansin Taj'),
+          e('p', { className: 'text-2xl text-white mb-8' }, 'Marketing Intern Application for Spotify'),
+          e('p', { className: 'text-xl text-gray-400' }, 'Transforming ideas into viral campaigns'),
+          e('div', { className: 'mt-12 grid grid-cols-4 gap-4 max-w-4xl mx-auto' },
+            e('div', { className: 'bg-gradient-to-br from-pink-500 to-red-500 p-6 rounded-2xl' },
+              e('div', { className: 'text-5xl font-black text-white mb-2' }, '2.5M+'),
+              e('div', { className: 'text-sm text-white' }, 'Views')
+            ),
+            e('div', { className: 'bg-gradient-to-br from-purple-500 to-blue-500 p-6 rounded-2xl' },
+              e('div', { className: 'text-5xl font-black text-white mb-2' }, '128%'),
+              e('div', { className: 'text-sm text-white' }, 'Growth')
+            ),
+            e('div', { className: 'bg-gradient-to-br from-green-500 to-teal-500 p-6 rounded-2xl' },
+              e('div', { className: 'text-5xl font-black text-white mb-2' }, '25%'),
+              e('div', { className: 'text-sm text-white' }, 'RFP Lift')
+            ),
+            e('div', { className: 'bg-gradient-to-br from-yellow-500 to-orange-500 p-6 rounded-2xl' },
+              e('div', { className: 'text-5xl font-black text-white mb-2' }, '95%+'),
+              e('div', { className: 'text-sm text-white' }, 'Satisfaction')
+            )
+          ),
+          e('div', { className: 'mt-12' },
+            e('a', {
+              href: 'mailto:ft2366@nyu.edu',
+              className: 'inline-block px-8 py-4 bg-green-500 text-black font-bold rounded-full hover:bg-green-400'
+            }, 'ft2366@nyu.edu')
+          )
+        )
+      );
+    }
+    
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(e(SpotifyApp));
+  </script>
+</body>
+</html>
