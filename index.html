@@ -8,7 +8,6 @@
   <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
   <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Indie+Flower&display=swap" rel="stylesheet">
   <style>
     body { margin: 0; padding: 0; background-color: #000; }
     .scrollbar-hide::-webkit-scrollbar { display: none; }
@@ -18,1401 +17,285 @@
 <body>
   <div id="root"></div>
   <script type="text/babel">
-    const { useState, useEffect } = React;
+    const { useState } = React;
     
-    // Icon components
-    const Play = (props) => <svg {...props} width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>;
-    const Heart = ({size = 24, className = ""}) => <svg className={className} width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>;
-    const Download = ({size = 24}) => <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>;
-    const MoreHorizontal = ({size = 24, className=""}) => <svg className={className} width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="1"></circle><circle cx="19" cy="12" r="1"></circle><circle cx="5" cy="12" r="1"></circle></svg>;
-    const Search = ({size = 24}) => <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.35-4.35"></path></svg>;
-    const Clock = ({size = 24}) => <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>;
-    const Linkedin = ({size = 24}) => <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg>;
-    const Mail = ({size = 24}) => <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>;
-    const ExternalLink = ({size = 24}) => <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>;
-    const Check = ({size = 24, className=""}) => <svg className={className} width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="20 6 9 17 4 12"></polyline></svg>;
-    const Shuffle = ({size = 24}) => <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="16 3 21 3 21 8"></polyline><line x1="4" y1="20" x2="21" y2="3"></line></svg>;
-    const SkipBack = ({size = 24}) => <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polygon points="19 20 9 12 19 4 19 20"></polygon><line x1="5" y1="19" x2="5" y2="5"></line></svg>;
-    const SkipForward = ({size = 24}) => <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polygon points="5 4 15 12 5 20 5 4"></polygon><line x1="19" y1="5" x2="19" y2="19"></line></svg>;
-    const Repeat = ({size = 24}) => <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="17 1 21 5 17 9"></polyline><path d="M3 11V9a4 4 0 0 1 4-4h14"></path></svg>;
-    const Volume2 = ({size = 24}) => <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon></svg>;
-    const Maximize2 = ({size = 24}) => <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="15 3 21 3 21 9"></polyline><polyline points="9 21 3 21 3 15"></polyline></svg>;
-    const List = ({size = 24}) => <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line></svg>;
-    const Plus = ({size = 24}) => <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>;
-
-
-
-
-function SpotifyMarketingApp() {
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [hoveredTrack, setHoveredTrack] = useState(null);
-  const [isLiked, setIsLiked] = useState(false);
-  const [currentSlide, setCurrentSlide] = useState(0);
-  const [isAutoPlaying, setIsAutoPlaying] = useState(true);
-
-  // Auto-play carousel
-  useEffect(() => {
-    if (!isAutoPlaying) return;
+    // Icons
+    const Play = () => <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>;
+    const Heart = ({size = 20}) => <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>;
+    const Clock = ({size = 20}) => <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>;
+    const Search = ({size = 20}) => <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.35-4.35"></path></svg>;
+    const Mail = ({size = 20}) => <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>;
+    const Linkedin = ({size = 20}) => <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg>;
+    const Check = ({size = 20}) => <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="20 6 9 17 4 12"></polyline></svg>;
     
-    const interval = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % 6);
-    }, 4000);
-
-    return () => clearInterval(interval);
-  }, [isAutoPlaying]);
-
-  const nextSlide = () => {
-    setCurrentSlide((prev) => (prev + 1) % 6);
-    setIsAutoPlaying(false);
-  };
-
-  const prevSlide = () => {
-    setCurrentSlide((prev) => (prev - 1 + 6) % 6);
-    setIsAutoPlaying(false);
-  };
-
-  const goToSlide = (index) => {
-    setCurrentSlide(index);
-    setIsAutoPlaying(false);
-  };
-
-  const tracks = [
-    {
-      number: 1,
-      title: "Viral Campaign Strategy",
-      description: "Generated 2.5M+ organic views",
-      company: "Tash Marketing Agency",
-      dateAdded: "Sep 2024 - Present",
-      duration: "4:30",
-      skills: ["Campaign Strategy", "HubSpot CRM", "Cross-Functional Leadership"]
-    },
-    {
-      number: 2,
-      title: "Product Marketing & Positioning",
-      description: "Increased RFP success by 25%",
-      company: "Inspire Infosol (B2B SaaS)",
-      dateAdded: "Oct - Dec 2024",
-      duration: "3:45",
-      skills: ["Product Positioning", "Stakeholder Communication", "Sales Enablement"]
-    },
-    {
-      number: 3,
-      title: "Go-to-Market Execution",
-      description: "Drove 128% engagement growth",
-      company: "Edwisley (AI EdTech)",
-      dateAdded: "Nov 2023 - Aug 2024",
-      duration: "5:20",
-      skills: ["GTM Strategy", "Content Marketing", "Customer Segmentation"]
-    },
-    {
-      number: 4,
-      title: "Music Culture Fluency",
-      description: "Curating playlists since middle school",
-      company: "From Bollywood to Billie Eilish",
-      dateAdded: "Lifelong passion",
-      duration: "3:15",
-      skills: ["Trend Spotting", "Early Adopter", "Cross-Cultural Understanding"]
-    },
-    {
-      number: 5,
-      title: "Data-Driven Creative",
-      description: "SQL, Python, Analytics expertise",
-      company: "CS + Management of Technology",
-      dateAdded: "NYU '27",
-      duration: "4:05",
-      skills: ["Business Analytics", "A/B Testing", "Performance Tracking"]
-    },
-    {
-      number: 6,
-      title: "Content Creation & Storytelling",
-      description: "YouTube vlogs & short-form content",
-      company: "Building Life in NYC",
-      dateAdded: "Current creator",
-      duration: "3:50",
-      skills: ["Video Production", "Narrative Design", "Audience Building"]
-    },
-    {
-      number: 7,
-      title: "Community & Collaboration",
-      description: "Maintained 95%+ client satisfaction",
-      company: "Leadership Across Teams",
-      dateAdded: "Proven track record",
-      duration: "4:10",
-      skills: ["Cross-Functional", "Stakeholder Mgmt", "Team Leadership"]
-    },
-    {
-      number: 8,
-      title: "The Surprise Element",
-      description: "Treasure hunt campaign that went viral",
-      company: "Event Marketing Innovation",
-      dateAdded: "2024",
-      duration: "3:30",
-      skills: ["Experiential Marketing", "Anticipation Building", "Viral Design"]
-    }
-  ];
-
-  const stats = [
-    { label: "MS Management of Technology", value: "NYU '27" },
-    { label: "Graduation Year", value: "2027" },
-    { label: "Available", value: "June 15 - Aug 21, 2026" }
-  ];
-
-  const toolkitCards = [
-    {
-      title: "Marketing Excellence",
-      items: ["Go-to-Market Strategy", "Product Positioning", "Campaign Strategy", "Market Research", "Content Marketing"]
-    },
-    {
-      title: "Technical Fluency",
-      items: ["SQL & Python", "HubSpot & Analytics", "Excel & Data Viz", "Agile/Scrum"]
-    },
-    {
-      title: "Creative Execution",
-      items: ["Storytelling", "Video Production", "Design Thinking", "Brand Development"]
-    },
-    {
-      title: "Spotify Requirements ✓",
-      items: ["Music Passion ✓", "Collaboration Track Record ✓", "Self-Motivated ✓", "Content Development ✓"]
-    }
-  ];
-
-  return (
-    <div className="bg-black text-white min-h-screen font-sans">
-      {/* Top Navigation Bar */}
-      <div className="fixed top-0 left-0 right-0 bg-black/95 backdrop-blur-md z-50 px-6 py-3 flex items-center justify-between border-b border-white/5">
-        <div className="flex items-center gap-4">
-          <button className="w-8 h-8 rounded-full bg-black/40 flex items-center justify-center hover:bg-black/60">
-            <span className="text-white">←</span>
-          </button>
-          <button className="w-8 h-8 rounded-full bg-black/40 flex items-center justify-center hover:bg-black/60">
-            <span className="text-white">→</span>
-          </button>
-        </div>
-        
-        <div className="flex-1 max-w-md mx-8">
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
-            <input 
-              type="text" 
-              placeholder="Why should we hire Tansin?"
-              className="w-full bg-white/10 rounded-full py-2 pl-12 pr-4 text-sm focus:outline-none focus:bg-white/15"
-            />
+    function SpotifyApp() {
+      const [hoveredTrack, setHoveredTrack] = useState(null);
+      
+      const tracks = [
+        { number: 1, title: "Viral Campaign Strategy", description: "Generated 2.5M+ organic views", company: "Tash Marketing Agency", date: "Sep 2024 - Present", duration: "4:30", skills: ["Campaign Strategy", "HubSpot CRM", "Cross-Functional Leadership"] },
+        { number: 2, title: "Product Marketing & Positioning", description: "Increased RFP success by 25%", company: "Inspire Infosol (B2B SaaS)", date: "Oct - Dec 2024", duration: "3:45", skills: ["Product Positioning", "Stakeholder Communication", "Sales Enablement"] },
+        { number: 3, title: "Go-to-Market Execution", description: "Drove 128% engagement growth", company: "Edwisley (AI EdTech)", date: "Nov 2023 - Aug 2024", duration: "5:20", skills: ["GTM Strategy", "Content Marketing", "Customer Segmentation"] },
+        { number: 4, title: "Music Culture Fluency", description: "Curating playlists since middle school", company: "From Bollywood to Billie Eilish", date: "Lifelong passion", duration: "3:15", skills: ["Trend Spotting", "Early Adopter", "Cross-Cultural Understanding"] },
+        { number: 5, title: "Data-Driven Creative", description: "SQL, Python, Analytics expertise", company: "CS + Management of Technology", date: "NYU '27", duration: "4:05", skills: ["Business Analytics", "A/B Testing", "Performance Tracking"] },
+        { number: 6, title: "Content Creation & Storytelling", description: "YouTube vlogs & short-form content", company: "Building Life in NYC", date: "Current creator", duration: "3:50", skills: ["Video Production", "Narrative Design", "Audience Building"] },
+        { number: 7, title: "Community & Collaboration", description: "Maintained 95%+ client satisfaction", company: "Leadership Across Teams", date: "Proven track record", duration: "4:10", skills: ["Cross-Functional", "Stakeholder Mgmt", "Team Leadership"] },
+        { number: 8, title: "The Surprise Element", description: "Treasure hunt viral campaign", company: "Event Marketing Innovation", date: "Award-winning", duration: "3:35", skills: ["Experiential Marketing", "Viral Strategy", "Creative Execution"] }
+      ];
+      
+      return (
+        <div className="bg-black text-white min-h-screen pb-32">
+          {/* Top Nav */}
+          <div className="fixed top-0 left-0 right-0 bg-black/95 backdrop-blur-md z-50 px-6 py-3 flex items-center justify-between border-b border-white/10">
+            <div className="flex items-center gap-4">
+              <button className="w-8 h-8 rounded-full bg-black/40 flex items-center justify-center text-white hover:bg-black/60">←</button>
+              <button className="w-8 h-8 rounded-full bg-black/40 flex items-center justify-center text-white hover:bg-black/60">→</button>
+            </div>
+            <div className="flex-1 max-w-md mx-8">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
+                <input type="text" placeholder="Why should we hire Tansin?" className="w-full bg-white/10 rounded-full py-2 pl-12 pr-4 text-sm text-white placeholder:text-gray-400" />
+              </div>
+            </div>
+            <a href="https://drive.google.com/file/d/1AMi3ISwWk7KxtBkdvgINMgqpPmQiig1t/view" target="_blank" rel="noopener noreferrer" className="px-8 py-2 bg-white text-black rounded-full font-bold text-sm hover:scale-105 transition-transform">
+              View Full Resume
+            </a>
           </div>
-        </div>
-
-        <button className="px-8 py-2 bg-white text-black rounded-full font-bold text-sm hover:scale-105 transition-transform">
-          <a href="https://drive.google.com/file/d/1AMi3ISwWk7KxtBkdvgINMgqpPmQiig1t/view?usp=drive_link" target="_blank" rel="noopener noreferrer" className="text-black">
-            View Full Resume
-          </a>
-        </button>
-      </div>
-
-      <div className="pt-20">
-        {/* Profile Header Section */}
-        <div className="relative bg-gradient-to-b from-gray-800 via-gray-900 to-black px-6 pt-16 pb-6">
-          <div className="max-w-7xl mx-auto flex items-end gap-6">
-            {/* Profile Picture */}
-            <div className="flex-shrink-0">
-              <div className="w-56 h-56 rounded-full bg-gradient-to-br from-green-400 to-blue-500 p-1">
-                <div className="w-full h-full rounded-full overflow-hidden">
-                  <img 
-                    src="./Tansin.JPG" 
-                    alt="Tansin Taj"
-                    className="w-full h-full object-cover"
-                  />
+          
+          {/* Profile Header */}
+          <div className="pt-20 bg-gradient-to-b from-gray-800 via-gray-900 to-black px-6 py-16">
+            <div className="max-w-7xl mx-auto flex items-end gap-6">
+              <div className="w-56 h-56 rounded-full bg-gradient-to-br from-green-400 to-blue-500 p-1 flex-shrink-0">
+                <img src="./Tansin.JPG" alt="Tansin Taj" className="w-full h-full rounded-full object-cover" />
+              </div>
+              <div className="pb-6">
+                <div className="text-sm font-bold mb-2">Profile</div>
+                <h1 className="text-8xl font-black mb-6">Tansin Taj</h1>
+                <div className="flex items-center gap-2 text-sm text-white/80">
+                  <span className="font-bold">MS Management of Technology</span>
+                  <span>•</span>
+                  <span>NYU '27</span>
+                  <span>•</span>
+                  <span>Available June 15 - Aug 21, 2026</span>
                 </div>
               </div>
             </div>
-
-            {/* Profile Info */}
-            <div className="flex-1 pb-6">
-              <div className="text-sm font-bold mb-2">Profile</div>
-              <h1 className="text-8xl font-black mb-6 tracking-tight" style={{ fontFamily: 'Circular, -apple-system, sans-serif' }}>
-                Tansin Taj
-              </h1>
-              <div className="flex items-center gap-2 text-sm">
-                <span className="font-bold">{stats[0].label}</span>
-                <span className="text-white/70">•</span>
-                <span className="text-white/70">{stats[0].value}</span>
-                <span className="text-white/70">•</span>
-                <span className="font-bold">{stats[1].value}</span>
-                <span className="text-white/70">•</span>
-                <span className="text-white/70">{stats[2].value}</span>
-              </div>
-            </div>
           </div>
-        </div>
-
-        {/* Playlist/Album Header */}
-        <div className="bg-gradient-to-b from-black via-gray-900/50 to-black">
+          
+          {/* Main Content */}
           <div className="max-w-7xl mx-auto px-6 py-6">
-            <div className="flex items-center gap-6 mb-8">
-              {/* Play Button */}
-              <button 
-                onClick={() => setIsPlaying(!isPlaying)}
-                className="w-14 h-14 rounded-full bg-green-500 hover:bg-green-400 hover:scale-105 transition-all flex items-center justify-center shadow-2xl shadow-black/40"
-              >
-                <Play fill="black" className="text-black ml-1" size={24} />
-              </button>
-
-              {/* Like Button */}
-              <button 
-                onClick={() => setIsLiked(!isLiked)}
-                className="w-10 h-10 flex items-center justify-center hover:scale-110 transition-transform"
-              >
-                <Heart 
-                  size={32} 
-                  className={isLiked ? "fill-green-500 text-green-500" : "text-white/70 hover:text-white"}
-                />
-              </button>
-
-              {/* Download Button */}
-              <button className="w-10 h-10 flex items-center justify-center hover:scale-110 transition-transform">
-                <Download size={28} className="text-white/70 hover:text-white" />
-              </button>
-
-              {/* More Options */}
-              <button className="w-10 h-10 flex items-center justify-center hover:scale-110 transition-transform">
-                <MoreHorizontal size={28} className="text-white/70 hover:text-white" />
-              </button>
-            </div>
-
-            {/* Playlist Title Section */}
-            <div className="mb-8">
-              <div className="text-sm text-white/70 mb-2">Public Playlist</div>
-              <h2 className="text-5xl font-black mb-4 tracking-tight">
-                Handpicked for You
-              </h2>
-              <div className="flex items-center gap-2 text-sm text-white/70">
-                <div className="w-6 h-6 rounded-full bg-green-500 flex items-center justify-center">
-                  <span className="text-black font-bold text-xs">T</span>
+            
+            {/* Wrapped Stats Banner */}
+            <div className="mb-12 bg-gradient-to-br from-purple-600 via-pink-500 to-orange-400 rounded-3xl p-12 relative overflow-hidden">
+              <div className="absolute inset-0 opacity-20">
+                <div className="absolute top-0 right-0 w-96 h-96 bg-white/30 rounded-full blur-3xl"></div>
+                <div className="absolute bottom-0 left-0 w-80 h-80 bg-white/20 rounded-full blur-3xl"></div>
+              </div>
+              <div className="relative z-10 text-center">
+                <div className="inline-block px-6 py-2 bg-white/20 backdrop-blur-sm rounded-full text-sm font-bold mb-6 text-white">
+                  YOUR 2024 IN MARKETING
                 </div>
-                <span className="font-bold text-white">Tansin Taj</span>
-                <span>•</span>
-                <span>{tracks.length} tracks</span>
-                <span>•</span>
-                <span>Ready to make Spotify magic</span>
+                <h2 className="text-6xl font-black mb-4 text-white">Hey, my name is Tansin</h2>
+                <p className="text-xl text-white/90 mb-8">This is my story of turning ideas into campaigns, data into strategy, and passion into results.</p>
+                <div className="grid grid-cols-4 gap-6 mt-8">
+                  <div>
+                    <div className="text-6xl font-black text-white mb-2">2.5M+</div>
+                    <div className="text-lg font-bold text-white/95">Organic Views</div>
+                    <div className="text-sm text-white/80 mt-1">Viral campaign strategy</div>
+                  </div>
+                  <div>
+                    <div className="text-6xl font-black text-white mb-2">128%</div>
+                    <div className="text-lg font-bold text-white/95">Engagement Growth</div>
+                    <div className="text-sm text-white/80 mt-1">GTM execution</div>
+                  </div>
+                  <div>
+                    <div className="text-6xl font-black text-white mb-2">25%</div>
+                    <div className="text-lg font-bold text-white/95">RFP Success Lift</div>
+                    <div className="text-sm text-white/80 mt-1">Product positioning</div>
+                  </div>
+                  <div>
+                    <div className="text-6xl font-black text-white mb-2">95%+</div>
+                    <div className="text-lg font-bold text-white/95">Client Satisfaction</div>
+                    <div className="text-sm text-white/80 mt-1">Collaboration & leadership</div>
+                  </div>
+                </div>
               </div>
             </div>
-
-            {/* Track List Header */}
-            <div className="grid grid-cols-[16px_minmax(0,2fr)_minmax(0,2fr)_minmax(0,2fr)_minmax(0,1.5fr)_minmax(0,2.5fr)_60px] gap-4 px-4 py-2 text-sm text-white/50 border-b border-white/10 mb-2">
-              <div className="text-center">#</div>
-              <div>Title</div>
-              <div>Description</div>
-              <div>Company</div>
-              <div>Date added</div>
-              <div>Skills</div>
-              <div className="flex justify-end">
-                <Clock size={16} />
+            
+            {/* Dream Company Banner */}
+            <div className="mb-12 bg-gradient-to-br from-green-500 via-emerald-500 to-teal-500 rounded-3xl p-12 relative overflow-hidden">
+              <div className="absolute inset-0 opacity-20">
+                <div className="absolute top-1/4 -left-24 w-96 h-96 bg-lime-300 rounded-full blur-3xl"></div>
+                <div className="absolute bottom-1/4 -right-24 w-96 h-96 bg-teal-300 rounded-full blur-3xl"></div>
               </div>
-            </div>
-
-            {/* Track List */}
-            <div className="space-y-1">
-              {tracks.map((track, index) => (
-                <div
-                  key={index}
-                  onMouseEnter={() => setHoveredTrack(index)}
-                  onMouseLeave={() => setHoveredTrack(null)}
-                  className={`grid grid-cols-[16px_minmax(0,2fr)_minmax(0,2fr)_minmax(0,2fr)_minmax(0,1.5fr)_minmax(0,2.5fr)_60px] gap-4 px-4 py-2 rounded-md group hover:bg-white/10 transition-colors cursor-pointer ${
-                    hoveredTrack === index ? 'bg-white/10' : ''
-                  }`}
-                >
-                  {/* Track Number / Play Button */}
-                  <div className="flex items-center justify-center">
-                    {hoveredTrack === index ? (
-                      <Play fill="white" className="text-white" size={14} />
-                    ) : (
-                      <span className="text-white/70 text-sm">{track.number}</span>
-                    )}
-                  </div>
-
-                  {/* Title */}
-                  <div className="flex items-center min-w-0">
-                    <span className={`truncate ${hoveredTrack === index ? 'text-green-400' : 'text-white'}`}>
-                      {track.title}
-                    </span>
-                  </div>
-
-                  {/* Description */}
-                  <div className="flex items-center text-sm text-white/70 min-w-0">
-                    <span className="truncate">{track.description}</span>
-                  </div>
-
-                  {/* Company */}
-                  <div className="flex items-center text-sm text-white/70 min-w-0">
-                    <span className="truncate">{track.company}</span>
-                  </div>
-
-                  {/* Date Added */}
-                  <div className="flex items-center text-sm text-white/70 min-w-0">
-                    <span className="truncate">{track.dateAdded}</span>
-                  </div>
-
-                  {/* Skills */}
-                  <div className="flex items-center min-w-0 overflow-hidden">
-                    <div className="flex gap-1 flex-wrap">
-                      {track.skills.slice(0, 2).map((skill, idx) => (
-                        <span
-                          key={idx}
-                          className="px-2 py-0.5 bg-green-500/20 text-green-400 border border-green-500/30 rounded-full text-xs whitespace-nowrap"
-                        >
-                          {skill}
-                        </span>
-                      ))}
-                      {track.skills.length > 2 && (
-                        <span className="text-xs text-white/50">+{track.skills.length - 2}</span>
-                      )}
-                    </div>
-                  </div>
-
-                  {/* Duration */}
-                  <div className="flex items-center justify-end gap-3">
-                    <button 
-                      className={`${hoveredTrack === index ? 'opacity-100' : 'opacity-0'} hover:scale-110 transition-all`}
-                    >
-                      <Heart size={16} className="text-white/70 hover:text-white" />
-                    </button>
-                    <span className="text-sm text-white/70 w-10 text-right">
-                      {track.duration}
-                    </span>
-                    {hoveredTrack === index && (
-                      <button className="opacity-100 transition-all">
-                        <MoreHorizontal size={16} className="text-white/70 hover:text-white" />
-                      </button>
-                    )}
-                  </div>
+              <div className="relative z-10 text-center">
+                <div className="inline-block px-6 py-2 bg-white/20 backdrop-blur-sm rounded-full text-sm font-bold mb-6 text-white">
+                  MY DREAM
                 </div>
-              ))}
-            </div>
-
-            {/* Made For Section */}
-            <div className="mt-16 mb-8">
-              <div className="flex items-center justify-between mb-6">
-                <div>
-                  <div className="text-sm text-white/70 mb-2">Made For</div>
-                  <h3 className="text-3xl font-black">Spotify Marketing Team</h3>
-                </div>
-                <button className="text-sm text-white/70 hover:text-white font-bold">Show all</button>
-              </div>
-              
-              <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide snap-x snap-mandatory">
-                <div className="flex-shrink-0 w-48 p-4 bg-white/5 rounded-lg hover:bg-white/10 transition-all cursor-pointer snap-start">
-                  <div className="aspect-square bg-gradient-to-br from-green-400 to-teal-500 rounded-lg mb-4 flex items-center justify-center relative overflow-hidden">
-                    <div className="absolute inset-0 opacity-20">
-                      <div className="absolute top-4 right-4 w-16 h-16 bg-white/30 rounded-full blur-xl"></div>
-                      <div className="absolute bottom-6 left-6 w-20 h-20 bg-white/20 rounded-full blur-xl"></div>
-                    </div>
-                    <svg className="w-16 h-16 text-white/80" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
-                    </svg>
-                  </div>
-                  <div className="space-y-1 text-sm text-white/90">
-                    <div>• GTM Strategy</div>
-                    <div>• Product Positioning</div>
-                    <div>• Campaign Strategy</div>
-                    <div>• Market Research</div>
-                  </div>
-                </div>
-
-                <div className="flex-shrink-0 w-48 p-4 bg-white/5 rounded-lg hover:bg-white/10 transition-all cursor-pointer snap-start">
-                  <div className="aspect-square bg-gradient-to-br from-blue-400 to-purple-500 rounded-lg mb-4 flex items-center justify-center relative overflow-hidden">
-                    <div className="absolute inset-0 opacity-20">
-                      <div className="absolute top-6 left-6 w-16 h-16 bg-white/30 rounded-full blur-xl"></div>
-                      <div className="absolute bottom-4 right-4 w-24 h-24 bg-white/20 rounded-full blur-xl"></div>
-                    </div>
-                    <svg className="w-16 h-16 text-white/80" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
-                    </svg>
-                  </div>
-                  <div className="space-y-1 text-sm text-white/90">
-                    <div>• SQL & Python</div>
-                    <div>• HubSpot CRM</div>
-                    <div>• Google Analytics</div>
-                    <div>• Tableau & Excel</div>
-                  </div>
-                </div>
-
-                <div className="flex-shrink-0 w-48 p-4 bg-white/5 rounded-lg hover:bg-white/10 transition-all cursor-pointer snap-start">
-                  <div className="aspect-square bg-gradient-to-br from-pink-400 to-red-500 rounded-lg mb-4 flex items-center justify-center relative overflow-hidden">
-                    <div className="absolute inset-0 opacity-20">
-                      <div className="absolute top-8 right-8 w-20 h-20 bg-white/30 rounded-full blur-xl"></div>
-                      <div className="absolute bottom-8 left-8 w-16 h-16 bg-white/20 rounded-full blur-xl"></div>
-                    </div>
-                    <svg className="w-16 h-16 text-white/80" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
-                    </svg>
-                  </div>
-                  <div className="space-y-1 text-sm text-white/90">
-                    <div>• Content Strategy</div>
-                    <div>• Video Production</div>
-                    <div>• Storytelling</div>
-                    <div>• Brand Development</div>
-                  </div>
-                </div>
-
-                <div className="flex-shrink-0 w-48 p-4 bg-white/5 rounded-lg hover:bg-white/10 transition-all cursor-pointer snap-start">
-                  <div className="aspect-square bg-gradient-to-br from-yellow-400 to-orange-500 rounded-lg mb-4 flex items-center justify-center relative overflow-hidden">
-                    <div className="absolute inset-0 opacity-20">
-                      <div className="absolute top-4 left-4 w-24 h-24 bg-white/30 rounded-full blur-xl"></div>
-                      <div className="absolute bottom-6 right-6 w-16 h-16 bg-white/20 rounded-full blur-xl"></div>
-                    </div>
-                    <svg className="w-16 h-16 text-white/80" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3" />
-                    </svg>
-                  </div>
-                  <div className="space-y-1 text-sm text-white/90">
-                    <div>• Playlist curation</div>
-                    <div>• Early adopter</div>
-                    <div>• Music culture fluency</div>
-                    <div>• Cross-genre knowledge</div>
-                  </div>
-                </div>
-
-                <div className="flex-shrink-0 w-48 p-4 bg-white/5 rounded-lg hover:bg-white/10 transition-all cursor-pointer snap-start">
-                  <div className="aspect-square bg-gradient-to-br from-purple-400 to-pink-500 rounded-lg mb-4 flex items-center justify-center relative overflow-hidden">
-                    <div className="absolute inset-0 opacity-20">
-                      <div className="absolute top-6 right-6 w-20 h-20 bg-white/30 rounded-full blur-xl"></div>
-                      <div className="absolute bottom-4 left-4 w-16 h-16 bg-white/20 rounded-full blur-xl"></div>
-                    </div>
-                    <svg className="w-16 h-16 text-white/80" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                  </div>
-                  <div className="space-y-1 text-sm text-white/90">
-                    <div>• Lived in multiple countries</div>
-                    <div>• International clients</div>
-                    <div>• Multi-cultural insights</div>
-                    <div>• Diverse audiences</div>
-                  </div>
-                </div>
-
-                <div className="flex-shrink-0 w-48 p-4 bg-white/5 rounded-lg hover:bg-white/10 transition-all cursor-pointer snap-start">
-                  <div className="aspect-square bg-gradient-to-br from-teal-400 to-green-500 rounded-lg mb-4 flex items-center justify-center relative overflow-hidden">
-                    <div className="absolute inset-0 opacity-20">
-                      <div className="absolute top-4 right-8 w-16 h-16 bg-white/30 rounded-full blur-xl"></div>
-                      <div className="absolute bottom-8 left-6 w-20 h-20 bg-white/20 rounded-full blur-xl"></div>
-                    </div>
-                    <svg className="w-16 h-16 text-white/80" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-                    </svg>
-                  </div>
-                  <div className="space-y-1 text-sm text-white/90">
-                    <div>• Cross-functional teams</div>
-                    <div>• Stakeholder mgmt</div>
-                    <div>• 95%+ satisfaction</div>
-                    <div>• Agile/Scrum</div>
-                  </div>
-                </div>
-
-                <div className="flex-shrink-0 w-48 p-4 bg-white/5 rounded-lg hover:bg-white/10 transition-all cursor-pointer snap-start">
-                  <div className="aspect-square bg-gradient-to-br from-indigo-400 to-blue-500 rounded-lg mb-4 flex items-center justify-center relative overflow-hidden">
-                    <div className="absolute inset-0 opacity-20">
-                      <div className="absolute top-6 left-6 w-24 h-24 bg-white/30 rounded-full blur-xl"></div>
-                      <div className="absolute bottom-4 right-4 w-16 h-16 bg-white/20 rounded-full blur-xl"></div>
-                    </div>
-                    <svg className="w-16 h-16 text-white/80" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                    </svg>
-                  </div>
-                  <div className="space-y-1 text-sm text-white/90">
-                    <div>• 2.5M+ views</div>
-                    <div>• 128% growth</div>
-                    <div>• 25% lift in RFPs</div>
-                    <div>• Data-driven decisions</div>
-                  </div>
-                </div>
-
-                <a 
-                  href="https://drive.google.com/drive/folders/1KLqC8VqN9YPxGzH0wZ7YqJXvN5h3Mm4I?usp=sharing" 
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex-shrink-0 w-48 p-4 bg-gradient-to-br from-green-500 to-green-600 rounded-lg hover:from-green-400 hover:to-green-500 transition-all cursor-pointer snap-start"
-                >
-                  <div className="aspect-square bg-white/10 rounded-lg mb-4 flex items-center justify-center relative overflow-hidden">
-                    <div className="absolute inset-0 opacity-20">
-                      <div className="absolute top-8 right-8 w-20 h-20 bg-white/30 rounded-full blur-xl"></div>
-                      <div className="absolute bottom-6 left-6 w-16 h-16 bg-white/20 rounded-full blur-xl"></div>
-                    </div>
-                    <svg className="w-16 h-16 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                    </svg>
-                  </div>
-                  <div className="text-white font-bold mb-2">View My Work</div>
-                  <div className="text-sm text-white/90">Marketing proposals & results →</div>
-                </a>
-              </div>
-              
-              <style jsx>{`
-                .scrollbar-hide::-webkit-scrollbar {
-                  display: none;
-                }
-                .scrollbar-hide {
-                  -ms-overflow-style: none;
-                  scrollbar-width: none;
-                }
-              `}</style>
-            </div>
-
-            {/* Wrapped Carousel Section */}
-            <div className="mt-20 mb-20 relative">
-              <div className="relative h-[500px] bg-black rounded-3xl overflow-hidden">
-                {/* Slide 1: Spotify Wrapped 2026 Title */}
-                <div 
-                  className={`absolute inset-0 transition-all duration-700 ${currentSlide === 0 ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-full'}`}
-                  style={{ transitionDelay: currentSlide === 0 ? '0ms' : '0ms' }}
-                >
-                  <div className="absolute inset-0 bg-black">
-                    {/* Animated gradient blobs */}
-                    <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-gradient-to-br from-pink-500 to-purple-600 rounded-full blur-3xl opacity-40 animate-pulse"></div>
-                    <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-gradient-to-tl from-red-500 to-pink-600 rounded-full blur-3xl opacity-40 animate-pulse" style={{animationDelay: '1s'}}></div>
-                    
-                    {/* Spotify logo */}
-                    <div className="absolute top-8 left-8">
-                      <div className="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center">
-                        <span className="text-black text-3xl">♪</span>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <div className="text-center">
-                      <div className="text-9xl font-black mb-4 bg-gradient-to-r from-pink-400 via-purple-500 to-blue-500 bg-clip-text text-transparent animate-pulse">
-                        WRAPPED
-                      </div>
-                      <div className="text-7xl font-black text-white mb-6">2026</div>
-                      <div className="text-2xl text-white/80">A Marketing Story</div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Slide 2: Cassette & Walkman with "Hey! I am Tansin" */}
-                <div 
-                  className={`absolute inset-0 transition-all duration-700 ${currentSlide === 1 ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-full'}`}
-                >
-                  <div className="absolute inset-0 bg-black">
-                    {/* Gradient blobs */}
-                    <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-gradient-to-bl from-purple-600 to-pink-500 rounded-full blur-3xl opacity-30"></div>
-                    <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-gradient-to-tr from-red-600 to-orange-500 rounded-full blur-3xl opacity-30"></div>
-                    
-                    {/* Floating music notes */}
-                    {['♪', '♫', '♬', '♩'].map((note, i) => (
-                      <div
-                        key={i}
-                        className="absolute text-5xl text-white/30"
-                        style={{
-                          left: `${15 + i * 20}%`,
-                          top: `${20 + (i % 2) * 30}%`,
-                          animation: `floatMusic ${3 + i * 0.5}s ease-in-out infinite`,
-                          animationDelay: `${i * 0.3}s`
-                        }}
-                      >
-                        {note}
-                      </div>
-                    ))}
-                  </div>
-                  
-                  <div className="absolute inset-0 flex items-center justify-center gap-12">
-                    {/* Walkman */}
-                    <div className="relative">
-                      {/* Walkman body */}
-                      <div className="w-64 h-80 bg-gradient-to-br from-gray-800 to-gray-900 rounded-3xl border-4 border-gray-700 shadow-2xl relative overflow-hidden">
-                        {/* Screen/window for cassette */}
-                        <div className="absolute top-8 left-1/2 -translate-x-1/2 w-48 h-32 bg-black/50 rounded-xl border-2 border-gray-600 overflow-hidden">
-                          {/* Cassette tape inside */}
-                          <div className="absolute inset-2 bg-gradient-to-br from-pink-500 via-purple-600 to-red-500 rounded-lg flex items-center justify-center">
-                            <div className="text-white text-center px-4" style={{fontFamily: 'Courier New, monospace'}}>
-                              <div className="text-2xl font-black mb-2">Hey!</div>
-                              <div className="text-xl font-bold">I am Tansin</div>
-                            </div>
-                            {/* Cassette reels */}
-                            <div className="absolute top-2 left-4 w-8 h-8 border-4 border-black/30 rounded-full animate-spin" style={{animationDuration: '2s'}}></div>
-                            <div className="absolute top-2 right-4 w-8 h-8 border-4 border-black/30 rounded-full animate-spin" style={{animationDuration: '2s', animationDirection: 'reverse'}}></div>
-                          </div>
-                        </div>
-                        
-                        {/* Walkman buttons */}
-                        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex gap-2">
-                          <div className="w-8 h-8 bg-gray-600 rounded-full"></div>
-                          <div className="w-8 h-8 bg-green-500 rounded-full animate-pulse"></div>
-                          <div className="w-8 h-8 bg-gray-600 rounded-full"></div>
-                        </div>
-                        
-                        {/* Handwritten note on walkman */}
-                        <div className="absolute bottom-16 left-1/2 -translate-x-1/2 bg-yellow-100 px-4 py-2 rounded shadow-lg rotate-3">
-                          <p className="text-gray-800 text-sm" style={{fontFamily: 'Indie Flower, cursive'}}>
-                            turning ideas into campaigns,<br/>
-                            data into strategy ✨
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Slide 3: 2.5M Views - Fireworks/Explosion Effect */}
-                <div 
-                  className={`absolute inset-0 transition-all duration-700 ${currentSlide === 2 ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-full'}`}
-                >
-                  <div className="absolute inset-0 bg-black">
-                    {/* Explosion effect - radiating lines */}
-                    {[...Array(12)].map((_, i) => (
-                      <div
-                        key={i}
-                        className="absolute top-1/2 left-1/2 w-1 h-32 bg-gradient-to-t from-orange-500 to-transparent origin-bottom"
-                        style={{
-                          transform: `rotate(${i * 30}deg) translateY(-50%)`,
-                          animation: `expandLine 1.5s ease-out infinite`,
-                          animationDelay: `${i * 0.1}s`
-                        }}
-                      ></div>
-                    ))}
-                    
-                    {/* Gradient blobs */}
-                    <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-gradient-to-bl from-orange-500 to-red-600 rounded-full blur-3xl opacity-30"></div>
-                    <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-gradient-to-tr from-pink-600 to-purple-500 rounded-full blur-3xl opacity-30"></div>
-                    
-                    {/* Particle burst */}
-                    {[...Array(20)].map((_, i) => (
-                      <div
-                        key={i}
-                        className="absolute w-4 h-4 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-full"
-                        style={{
-                          left: '50%',
-                          top: '50%',
-                          animation: `burst 2s ease-out infinite`,
-                          animationDelay: `${i * 0.1}s`,
-                          '--angle': `${i * (360 / 20)}deg`
-                        } as React.CSSProperties}
-                      ></div>
-                    ))}
-                  </div>
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <div className="text-center">
-                      <div className="text-9xl font-black mb-6 bg-gradient-to-r from-orange-400 via-pink-500 to-red-500 bg-clip-text text-transparent drop-shadow-2xl">
-                        2.5M+
-                      </div>
-                      <div className="text-4xl font-bold text-white mb-3">Organic Views Generated</div>
-                      <div className="text-xl text-white/80 flex items-center justify-center gap-2">
-                        <span>Viral campaign strategy</span>
-                        <span className="text-3xl animate-bounce">🚀</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Slide 4: 128% Growth - Rocket/Growth Trajectory */}
-                <div 
-                  className={`absolute inset-0 transition-all duration-700 ${currentSlide === 3 ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-full'}`}
-                >
-                  <div className="absolute inset-0 bg-black">
-                    {/* Glassmorphism blobs */}
-                    <div className="absolute top-1/4 left-1/3 w-96 h-96 bg-purple-600/30 backdrop-blur-3xl rounded-full blur-2xl"></div>
-                    <div className="absolute bottom-1/4 right-1/3 w-96 h-96 bg-blue-600/30 backdrop-blur-3xl rounded-full blur-2xl"></div>
-                    
-                    {/* Trajectory path */}
-                    <svg className="absolute inset-0 w-full h-full opacity-30" xmlns="http://www.w3.org/2000/svg">
-                      <path 
-                        d="M 50 450 Q 200 350, 350 300 T 700 100" 
-                        stroke="url(#gradient)" 
-                        strokeWidth="4" 
-                        fill="none"
-                        strokeDasharray="10,5"
-                      />
-                      <defs>
-                        <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                          <stop offset="0%" style={{stopColor: '#a855f7', stopOpacity: 1}} />
-                          <stop offset="100%" style={{stopColor: '#3b82f6', stopOpacity: 1}} />
-                        </linearGradient>
-                      </defs>
-                    </svg>
-                    
-                    {/* Rocket */}
-                    <div className="absolute left-1/4 top-1/3 text-6xl animate-bounce" style={{animationDuration: '2s'}}>
-                      🚀
-                    </div>
-                    
-                    {/* Stars along path */}
-                    {[...Array(8)].map((_, i) => (
-                      <div
-                        key={i}
-                        className="absolute text-3xl"
-                        style={{
-                          left: `${10 + i * 12}%`,
-                          top: `${80 - i * 8}%`,
-                          animation: `twinkle ${2 + i * 0.2}s ease-in-out infinite`,
-                          animationDelay: `${i * 0.2}s`
-                        }}
-                      >
-                        ✨
-                      </div>
-                    ))}
-                  </div>
-                  <div className="absolute inset-0 flex items-center justify-end pr-20">
-                    <div className="text-right">
-                      <div className="text-9xl font-black mb-6 bg-gradient-to-r from-purple-400 via-blue-500 to-cyan-400 bg-clip-text text-transparent">
-                        128%
-                      </div>
-                      <div className="text-4xl font-bold text-white mb-3">Engagement Growth</div>
-                      <div className="text-xl text-white/80">Through strategic GTM execution</div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Slide 5: 25% RFP Lift - Target/Bullseye Effect */}
-                <div 
-                  className={`absolute inset-0 transition-all duration-700 ${currentSlide === 4 ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-full'}`}
-                >
-                  <div className="absolute inset-0 bg-black">
-                    {/* Mesh gradient effect */}
-                    <div className="absolute inset-0">
-                      <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-green-500/20 to-transparent"></div>
-                      <div className="absolute top-0 right-0 w-full h-full bg-gradient-to-bl from-teal-500/20 to-transparent"></div>
-                      <div className="absolute bottom-0 left-0 w-full h-full bg-gradient-to-tr from-cyan-500/20 to-transparent"></div>
-                    </div>
-                    
-                    {/* Concentric circles (bullseye) */}
-                    <div className="absolute left-1/4 top-1/2 -translate-y-1/2">
-                      {[1, 2, 3, 4].map((ring) => (
-                        <div
-                          key={ring}
-                          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full border-4 border-green-400/40"
-                          style={{
-                            width: `${ring * 60}px`,
-                            height: `${ring * 60}px`,
-                            animation: `ripple ${2 + ring * 0.3}s ease-out infinite`,
-                            animationDelay: `${ring * 0.2}s`
-                          }}
-                        ></div>
-                      ))}
-                      {/* Center target */}
-                      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-16 h-16 bg-gradient-to-br from-green-400 to-teal-500 rounded-full flex items-center justify-center">
-                        <span className="text-3xl">🎯</span>
-                      </div>
-                    </div>
-                    
-                    {/* Arrow hitting target animation */}
-                    <div className="absolute left-[22%] top-1/2 -translate-y-1/2 text-4xl animate-ping">
-                      →
-                    </div>
-                  </div>
-                  <div className="absolute inset-0 flex items-center justify-end pr-20">
-                    <div className="text-right">
-                      <div className="text-9xl font-black mb-6 bg-gradient-to-r from-green-400 via-teal-500 to-cyan-500 bg-clip-text text-transparent">
-                        25%
-                      </div>
-                      <div className="text-4xl font-bold text-white mb-3">RFP Success Rate Increase</div>
-                      <div className="text-xl text-white/80">Precision in product positioning</div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Slide 6: 95% Satisfaction - Keep as is */}
-                <div 
-                  className={`absolute inset-0 transition-all duration-700 ${currentSlide === 5 ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-full'}`}
-                >
-                  <div className="absolute inset-0 bg-black">
-                    {/* Star field */}
-                    {[...Array(20)].map((_, i) => (
-                      <div
-                        key={i}
-                        className="absolute text-4xl"
-                        style={{
-                          left: `${Math.random() * 100}%`,
-                          top: `${Math.random() * 100}%`,
-                          animation: `twinkle ${2 + Math.random() * 2}s ease-in-out infinite`,
-                          animationDelay: `${Math.random() * 2}s`
-                        }}
-                      >
-                        ⭐
-                      </div>
-                    ))}
-                    
-                    {/* Color blobs */}
-                    <div className="absolute top-1/3 right-1/4 w-96 h-96 bg-gradient-to-br from-yellow-500 to-orange-600 rounded-full blur-3xl opacity-30"></div>
-                    <div className="absolute bottom-1/3 left-1/4 w-96 h-96 bg-gradient-to-tl from-red-500 to-pink-600 rounded-full blur-3xl opacity-30"></div>
-                  </div>
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <div className="text-center">
-                      <div className="text-9xl font-black mb-6 bg-gradient-to-r from-yellow-400 via-orange-500 to-red-500 bg-clip-text text-transparent">
-                        95%+
-                      </div>
-                      <div className="text-4xl font-bold text-white mb-3">Client Satisfaction Rate</div>
-                      <div className="text-xl text-white/80">Through collaboration & team leadership</div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Slide 7: Dream Company - Keep as is but it's now slide 6 */}
-                <div 
-                  className={`absolute inset-0 transition-all duration-700 ${currentSlide === 5 ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-full'}`}
-                >
-                  <div className="absolute inset-0 bg-black">
-                    {/* Aurora effect */}
-                    <div className="absolute inset-0">
-                      <div className="absolute top-0 left-0 w-full h-1/2 bg-gradient-to-b from-green-500/20 via-teal-500/20 to-transparent blur-2xl"></div>
-                      <div className="absolute bottom-0 right-0 w-full h-1/2 bg-gradient-to-t from-emerald-500/20 via-cyan-500/20 to-transparent blur-2xl"></div>
-                    </div>
-                    
-                    {/* Spotify logo simulation */}
-                    <div className="absolute top-20 left-20">
-                      <div className="w-24 h-24 bg-green-500 rounded-full flex items-center justify-center">
-                        <div className="text-black text-5xl font-black">♪</div>
-                      </div>
-                    </div>
-                    
-                    {/* Floating hearts */}
-                    {[...Array(6)].map((_, i) => (
-                      <div
-                        key={i}
-                        className="absolute text-3xl"
-                        style={{
-                          left: `${20 + i * 15}%`,
-                          bottom: '10%',
-                          animation: `floatUp ${3 + i * 0.3}s ease-in infinite`,
-                          animationDelay: `${i * 0.5}s`
-                        }}
-                      >
-                        💚
-                      </div>
-                    ))}
-                  </div>
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <div className="text-center max-w-4xl px-8">
-                      <div className="inline-block px-6 py-2 bg-green-500/20 backdrop-blur-md rounded-full text-sm font-bold mb-6 text-green-400 border border-green-500/30">
-                        MY DREAM
-                      </div>
-                      <h2 className="text-6xl font-black mb-6 text-white leading-tight">
-                        Spotify isn't just my favorite product,<br/>
-                        <span className="bg-gradient-to-r from-green-400 to-teal-400 bg-clip-text text-transparent">
-                          it's my dream company
-                        </span>
-                      </h2>
-                      <p className="text-2xl text-white/90">
-                        I even wrote about it in my Statement of Purpose.<br/>
-                        Now I'm here to make that dream real.
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Navigation Arrows */}
-                <button
-                  onClick={prevSlide}
-                  className="absolute left-6 top-1/2 -translate-y-1/2 w-12 h-12 bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/20 rounded-full flex items-center justify-center transition-all z-20"
-                >
-                  <span className="text-white text-2xl">←</span>
-                </button>
-                <button
-                  onClick={nextSlide}
-                  className="absolute right-6 top-1/2 -translate-y-1/2 w-12 h-12 bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/20 rounded-full flex items-center justify-center transition-all z-20"
-                >
-                  <span className="text-white text-2xl">→</span>
-                </button>
-
-                {/* Dots Indicator - Updated for 6 slides */}
-                <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-3 z-20">
-                  {[0, 1, 2, 3, 4, 5].map((index) => (
-                    <button
-                      key={index}
-                      onClick={() => goToSlide(index)}
-                      className={`transition-all ${
-                        currentSlide === index
-                          ? 'w-8 h-3 bg-white'
-                          : 'w-3 h-3 bg-white/40 hover:bg-white/60'
-                      } rounded-full`}
-                    ></button>
-                  ))}
-                </div>
-              </div>
-
-              {/* Add animations */}
-              <style jsx>{`
-                @keyframes floatMusic {
-                  0%, 100% { transform: translateY(0px) rotate(0deg); opacity: 0.3; }
-                  50% { transform: translateY(-30px) rotate(10deg); opacity: 0.7; }
-                }
-                @keyframes expandLine {
-                  0% { height: 0; opacity: 1; }
-                  100% { height: 200px; opacity: 0; }
-                }
-                @keyframes burst {
-                  0% { transform: translate(-50%, -50%) rotate(var(--angle)) translateY(0); opacity: 1; }
-                  100% { transform: translate(-50%, -50%) rotate(var(--angle)) translateY(-150px); opacity: 0; }
-                }
-                @keyframes ripple {
-                  0% { transform: translate(-50%, -50%) scale(0.5); opacity: 1; }
-                  100% { transform: translate(-50%, -50%) scale(1.5); opacity: 0; }
-                }
-                @keyframes twinkle {
-                  0%, 100% { opacity: 0.3; transform: scale(1); }
-                  50% { opacity: 1; transform: scale(1.2); }
-                }
-                @keyframes floatUp {
-                  0% { transform: translateY(0); opacity: 1; }
-                  100% { transform: translateY(-100px); opacity: 0; }
-                }
-              `}</style>
-            </div>
-
-            {/* Why Spotify Section */}
-            <div className="mt-20 mb-20 relative">
-              <div className="relative h-[500px] bg-black rounded-3xl overflow-hidden">
-                {/* Slide 1: Cassette/Vinyl Intro */}
-                <div 
-                  className={`absolute inset-0 transition-all duration-700 ${currentSlide === 0 ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-full'}`}
-                  style={{ transitionDelay: currentSlide === 0 ? '0ms' : '0ms' }}
-                >
-                  <div className="absolute inset-0 bg-black">
-                    {/* Animated gradient blobs */}
-                    <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-gradient-to-br from-pink-500 to-purple-600 rounded-full blur-3xl opacity-40 animate-pulse"></div>
-                    <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-gradient-to-tl from-red-500 to-pink-600 rounded-full blur-3xl opacity-40 animate-pulse" style={{animationDelay: '1s'}}></div>
-                    
-                    {/* Rotating Vinyl */}
-                    <div className="absolute left-20 top-1/2 -translate-y-1/2">
-                      <div className="w-64 h-64 rounded-full bg-gradient-to-br from-gray-900 to-black border-4 border-white/20 relative animate-spin" style={{animationDuration: '4s'}}>
-                        <div className="absolute inset-8 rounded-full bg-gradient-to-br from-red-500 to-pink-600"></div>
-                        <div className="absolute inset-16 rounded-full bg-black"></div>
-                        <div className="absolute inset-24 rounded-full bg-gradient-to-br from-gray-800 to-gray-900"></div>
-                        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-black border-2 border-white/40"></div>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="absolute inset-0 flex items-center justify-end pr-20">
-                    <div className="text-right">
-                      <div className="inline-block px-6 py-2 bg-white/10 backdrop-blur-md rounded-full text-sm font-bold mb-4 text-white border border-white/20">
-                        YOUR 2024 IN MARKETING
-                      </div>
-                      <h2 className="text-7xl font-black mb-4 text-white leading-tight">
-                        Hey, my name<br/>is Tansin
-                      </h2>
-                      <p className="text-2xl text-white/90 max-w-xl">
-                        This is my story of turning ideas into campaigns,<br/>data into strategy, passion into results.
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Slide 2: 2.5M Views */}
-                <div 
-                  className={`absolute inset-0 transition-all duration-700 ${currentSlide === 1 ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-full'}`}
-                >
-                  <div className="absolute inset-0 bg-black">
-                    {/* Different blob pattern */}
-                    <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-gradient-to-bl from-orange-500 to-red-600 rounded-full blur-3xl opacity-30"></div>
-                    <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-gradient-to-tr from-pink-600 to-purple-500 rounded-full blur-3xl opacity-30"></div>
-                    
-                    {/* Floating particles */}
-                    {[...Array(8)].map((_, i) => (
-                      <div
-                        key={i}
-                        className="absolute w-3 h-3 bg-white/30 rounded-full"
-                        style={{
-                          left: `${20 + i * 10}%`,
-                          top: `${30 + (i % 3) * 20}%`,
-                          animation: `float ${3 + i * 0.5}s ease-in-out infinite`,
-                          animationDelay: `${i * 0.2}s`
-                        }}
-                      ></div>
-                    ))}
-                  </div>
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <div className="text-center">
-                      <div className="text-9xl font-black mb-6 bg-gradient-to-r from-orange-400 via-pink-500 to-red-500 bg-clip-text text-transparent">
-                        2.5M+
-                      </div>
-                      <div className="text-4xl font-bold text-white mb-3">Organic Views Generated</div>
-                      <div className="text-xl text-white/80">Through viral campaign strategy</div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Slide 3: 128% Growth */}
-                <div 
-                  className={`absolute inset-0 transition-all duration-700 ${currentSlide === 2 ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-full'}`}
-                >
-                  <div className="absolute inset-0 bg-black">
-                    {/* Glassmorphism blobs */}
-                    <div className="absolute top-1/4 left-1/3 w-96 h-96 bg-purple-600/30 backdrop-blur-3xl rounded-full blur-2xl"></div>
-                    <div className="absolute bottom-1/4 right-1/3 w-96 h-96 bg-blue-600/30 backdrop-blur-3xl rounded-full blur-2xl"></div>
-                    
-                    {/* Animated chart bars */}
-                    <div className="absolute left-20 bottom-20 flex items-end gap-4">
-                      {[40, 60, 80, 100, 128].map((height, i) => (
-                        <div
-                          key={i}
-                          className="w-12 bg-gradient-to-t from-purple-500 to-blue-400 rounded-t-lg"
-                          style={{
-                            height: `${height * 1.5}px`,
-                            animation: `slideUp 1s ease-out ${i * 0.1}s both`
-                          }}
-                        ></div>
-                      ))}
-                    </div>
-                  </div>
-                  <div className="absolute inset-0 flex items-center justify-end pr-20">
-                    <div className="text-right">
-                      <div className="text-9xl font-black mb-6 bg-gradient-to-r from-purple-400 via-blue-500 to-cyan-400 bg-clip-text text-transparent">
-                        128%
-                      </div>
-                      <div className="text-4xl font-bold text-white mb-3">Engagement Growth</div>
-                      <div className="text-xl text-white/80">Driven through Go-to-Market execution</div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Slide 4: 25% RFP Lift */}
-                <div 
-                  className={`absolute inset-0 transition-all duration-700 ${currentSlide === 3 ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-full'}`}
-                >
-                  <div className="absolute inset-0 bg-black">
-                    {/* Mesh gradient effect */}
-                    <div className="absolute inset-0">
-                      <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-green-500/20 to-transparent"></div>
-                      <div className="absolute top-0 right-0 w-full h-full bg-gradient-to-bl from-teal-500/20 to-transparent"></div>
-                      <div className="absolute bottom-0 left-0 w-full h-full bg-gradient-to-tr from-cyan-500/20 to-transparent"></div>
-                    </div>
-                    
-                    {/* Rising arrow animation */}
-                    <div className="absolute left-1/4 top-1/2 -translate-y-1/2">
-                      <svg className="w-32 h-32 text-green-400 animate-bounce" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
-                      </svg>
-                    </div>
-                  </div>
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <div className="text-center">
-                      <div className="text-9xl font-black mb-6 bg-gradient-to-r from-green-400 via-teal-500 to-cyan-500 bg-clip-text text-transparent">
-                        25%
-                      </div>
-                      <div className="text-4xl font-bold text-white mb-3">RFP Success Rate Increase</div>
-                      <div className="text-xl text-white/80">Product positioning & messaging mastery</div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Slide 5: 95% Satisfaction */}
-                <div 
-                  className={`absolute inset-0 transition-all duration-700 ${currentSlide === 4 ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-full'}`}
-                >
-                  <div className="absolute inset-0 bg-black">
-                    {/* Star field */}
-                    {[...Array(20)].map((_, i) => (
-                      <div
-                        key={i}
-                        className="absolute text-4xl"
-                        style={{
-                          left: `${Math.random() * 100}%`,
-                          top: `${Math.random() * 100}%`,
-                          animation: `twinkle ${2 + Math.random() * 2}s ease-in-out infinite`,
-                          animationDelay: `${Math.random() * 2}s`
-                        }}
-                      >
-                        ⭐
-                      </div>
-                    ))}
-                    
-                    {/* Color blobs */}
-                    <div className="absolute top-1/3 right-1/4 w-96 h-96 bg-gradient-to-br from-yellow-500 to-orange-600 rounded-full blur-3xl opacity-30"></div>
-                    <div className="absolute bottom-1/3 left-1/4 w-96 h-96 bg-gradient-to-tl from-red-500 to-pink-600 rounded-full blur-3xl opacity-30"></div>
-                  </div>
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <div className="text-center">
-                      <div className="text-9xl font-black mb-6 bg-gradient-to-r from-yellow-400 via-orange-500 to-red-500 bg-clip-text text-transparent">
-                        95%+
-                      </div>
-                      <div className="text-4xl font-bold text-white mb-3">Client Satisfaction Rate</div>
-                      <div className="text-xl text-white/80">Through collaboration & team leadership</div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Slide 6: Dream Company */}
-                <div 
-                  className={`absolute inset-0 transition-all duration-700 ${currentSlide === 5 ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-full'}`}
-                >
-                  <div className="absolute inset-0 bg-black">
-                    {/* Aurora effect */}
-                    <div className="absolute inset-0">
-                      <div className="absolute top-0 left-0 w-full h-1/2 bg-gradient-to-b from-green-500/20 via-teal-500/20 to-transparent blur-2xl"></div>
-                      <div className="absolute bottom-0 right-0 w-full h-1/2 bg-gradient-to-t from-emerald-500/20 via-cyan-500/20 to-transparent blur-2xl"></div>
-                    </div>
-                    
-                    {/* Spotify logo simulation */}
-                    <div className="absolute top-20 left-20">
-                      <div className="w-24 h-24 bg-green-500 rounded-full flex items-center justify-center">
-                        <div className="text-black text-5xl font-black">♪</div>
-                      </div>
-                    </div>
-                    
-                    {/* Floating hearts */}
-                    {[...Array(6)].map((_, i) => (
-                      <div
-                        key={i}
-                        className="absolute text-3xl"
-                        style={{
-                          left: `${20 + i * 15}%`,
-                          bottom: '10%',
-                          animation: `floatUp ${3 + i * 0.3}s ease-in infinite`,
-                          animationDelay: `${i * 0.5}s`
-                        }}
-                      >
-                        💚
-                      </div>
-                    ))}
-                  </div>
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <div className="text-center max-w-4xl px-8">
-                      <div className="inline-block px-6 py-2 bg-green-500/20 backdrop-blur-md rounded-full text-sm font-bold mb-6 text-green-400 border border-green-500/30">
-                        MY DREAM
-                      </div>
-                      <h2 className="text-6xl font-black mb-6 text-white leading-tight">
-                        Spotify isn't just my favorite product,<br/>
-                        <span className="bg-gradient-to-r from-green-400 to-teal-400 bg-clip-text text-transparent">
-                          it's my dream company
-                        </span>
-                      </h2>
-                      <p className="text-2xl text-white/90">
-                        I even wrote about it in my Statement of Purpose.<br/>
-                        Now I'm here to make that dream real.
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Navigation Arrows */}
-                <button
-                  onClick={prevSlide}
-                  className="absolute left-6 top-1/2 -translate-y-1/2 w-12 h-12 bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/20 rounded-full flex items-center justify-center transition-all z-20"
-                >
-                  <span className="text-white text-2xl">←</span>
-                </button>
-                <button
-                  onClick={nextSlide}
-                  className="absolute right-6 top-1/2 -translate-y-1/2 w-12 h-12 bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/20 rounded-full flex items-center justify-center transition-all z-20"
-                >
-                  <span className="text-white text-2xl">→</span>
-                </button>
-
-                {/* Dots Indicator */}
-                <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-3 z-20">
-                  {[0, 1, 2, 3, 4, 5].map((index) => (
-                    <button
-                      key={index}
-                      onClick={() => goToSlide(index)}
-                      className={`transition-all ${
-                        currentSlide === index
-                          ? 'w-8 h-3 bg-white'
-                          : 'w-3 h-3 bg-white/40 hover:bg-white/60'
-                      } rounded-full`}
-                    ></button>
-                  ))}
-                </div>
-              </div>
-
-              {/* Add animations */}
-              <style jsx>{`
-                @keyframes float {
-                  0%, 100% { transform: translateY(0px); }
-                  50% { transform: translateY(-20px); }
-                }
-                @keyframes slideUp {
-                  from { height: 0; opacity: 0; }
-                  to { opacity: 1; }
-                }
-                @keyframes twinkle {
-                  0%, 100% { opacity: 0.3; transform: scale(1); }
-                  50% { opacity: 1; transform: scale(1.2); }
-                }
-                @keyframes floatUp {
-                  0% { transform: translateY(0); opacity: 1; }
-                  100% { transform: translateY(-100px); opacity: 0; }
-                }
-              `}</style>
-            </div>
-
-            {/* Why Spotify Section */}
-            <div className="mt-16 p-8 bg-gradient-to-br from-green-500/20 to-blue-500/20 rounded-2xl border border-green-500/30">
-              <h3 className="text-3xl font-black mb-6">Why Spotify? Why Me?</h3>
-              <div className="grid md:grid-cols-2 gap-8">
-                <div>
-                  <h4 className="text-xl font-bold mb-4 text-green-400">What I Love About Spotify</h4>
-                  <ul className="space-y-3 text-white/90">
-                    <li className="flex items-start gap-3">
-                      <Check className="text-green-400 mt-1 flex-shrink-0" size={20} />
-                      <span><strong>The Algorithm:</strong> You know my 3am indie mood, my Sunday jazz ritual. You've mastered personalization through data + human curation.</span>
-                    </li>
-                    <li className="flex items-start gap-3">
-                      <Check className="text-green-400 mt-1 flex-shrink-0" size={20} />
-                      <span><strong>Blends & Parties:</strong> You turned listening into a social experience. But there's untapped potential for even deeper community connections.</span>
-                    </li>
-                    <li className="flex items-start gap-3">
-                      <Check className="text-green-400 mt-1 flex-shrink-0" size={20} />
-                      <span><strong>Cultural Curator:</strong> You evolved from a music player to a cultural force, and I want to help shape that evolution.</span>
-                    </li>
-                  </ul>
-                </div>
-                <div>
-                  <h4 className="text-xl font-bold mb-4 text-blue-400">What I Bring to Your Team</h4>
-                  <ul className="space-y-3 text-white/90">
-                    <li className="flex items-start gap-3">
-                      <Check className="text-blue-400 mt-1 flex-shrink-0" size={20} />
-                      <span><strong>I'm the user you're trying to reach:</strong> A marketer who actually lives the product daily.</span>
-                    </li>
-                    <li className="flex items-start gap-3">
-                      <Check className="text-blue-400 mt-1 flex-shrink-0" size={20} />
-                      <span><strong>Tech + Creative fluency:</strong> I bridge data teams and creative teams seamlessly with my CS background.</span>
-                    </li>
-                    <li className="flex items-start gap-3">
-                      <Check className="text-blue-400 mt-1 flex-shrink-0" size={20} />
-                      <span><strong>Global perspective:</strong> Growing up across multiple countries and working with international clients taught me to connect with audiences across cultures.</span>
-                    </li>
-                    <li className="flex items-start gap-3">
-                      <Check className="text-blue-400 mt-1 flex-shrink-0" size={20} />
-                      <span><strong>Proven ability to surprise:</strong> Created a treasure hunt campaign that built anticipation and drove viral engagement.</span>
-                    </li>
-                  </ul>
-                </div>
-              </div>
-              <div className="mt-8 p-6 bg-black/30 rounded-xl">
-                <p className="text-xl text-center font-bold text-white">
-                  I want to help artists and fans experience that same magic I feel every time I open Spotify. 
-                  Whether it's launching the next superstar or discovering the next Billie Eilish, 
-                  <span className="text-green-400"> I want to be where music marketing meets cultural moments.</span>
+                <h2 className="text-5xl font-black mb-6 text-white">
+                  Spotify isn't just my favorite product,<br/>it's my dream company
+                </h2>
+                <p className="text-xl text-white/90">
+                  I even wrote about it in my Statement of Purpose.<br/>
+                  Now I'm here to make that dream real.
                 </p>
               </div>
             </div>
-
-            {/* Contact CTA */}
-            <div className="mt-16 text-center pb-20">
-              <h3 className="text-4xl font-black mb-6">Let's Make Music Marketing Magic</h3>
-              <p className="text-white/70 mb-8 max-w-2xl mx-auto">
-                Ready to press play on campaigns that make people feel, stories that connect, 
-                and moments that resonate, just like the perfect song at the perfect time.
+            
+            {/* Playlist Header */}
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-2xl font-bold">Handpicked for You</h2>
+            </div>
+            
+            {/* Tracks Table */}
+            <div className="bg-black/20 rounded-lg">
+              <div className="grid grid-cols-[16px_2fr_2fr_1.5fr_1fr_60px] gap-4 px-4 py-2 text-sm text-gray-400 border-b border-white/10">
+                <div>#</div>
+                <div>Title</div>
+                <div>Description</div>
+                <div>Company</div>
+                <div>Skills</div>
+                <div><Clock size={16} /></div>
+              </div>
+              {tracks.map((track) => (
+                <div
+                  key={track.number}
+                  onMouseEnter={() => setHoveredTrack(track.number)}
+                  onMouseLeave={() => setHoveredTrack(null)}
+                  className="grid grid-cols-[16px_2fr_2fr_1.5fr_1fr_60px] gap-4 px-4 py-3 hover:bg-white/5 rounded group cursor-pointer"
+                >
+                  <div className="flex items-center justify-center text-gray-400 group-hover:text-white">
+                    {hoveredTrack === track.number ? <Play /> : track.number}
+                  </div>
+                  <div>
+                    <div className="font-bold text-white group-hover:text-green-500 truncate">{track.title}</div>
+                  </div>
+                  <div className="text-sm text-gray-400 truncate">{track.description}</div>
+                  <div className="text-sm text-gray-400 truncate">{track.company}</div>
+                  <div className="flex gap-1">
+                    <span className="px-2 py-1 bg-green-500/20 text-green-400 text-xs rounded">{track.skills[0]}</span>
+                    {track.skills.length > 1 && <span className="px-2 py-1 bg-white/5 text-gray-400 text-xs rounded">+{track.skills.length - 1}</span>}
+                  </div>
+                  <div className="text-sm text-gray-400">{track.duration}</div>
+                </div>
+              ))}
+            </div>
+            
+            {/* Made For Section */}
+            <div className="mt-12 mb-8">
+              <h3 className="text-2xl font-bold mb-6">Made For Spotify Marketing Team</h3>
+              <div className="flex gap-4 overflow-x-auto scrollbar-hide">
+                {[
+                  { emoji: '📊', title: 'GTM Strategy', skills: ['Product Positioning', 'Campaign Strategy', 'Market Research'] },
+                  { emoji: '💻', title: 'Tech Stack', skills: ['SQL & Python', 'HubSpot CRM', 'Google Analytics'] },
+                  { emoji: '🎨', title: 'Creative', skills: ['Content Strategy', 'Video Production', 'Storytelling'] },
+                  { emoji: '🎵', title: 'Music Passion', skills: ['Playlist curation', 'Early adopter', 'Culture fluency'] },
+                  { emoji: '🌍', title: 'Global View', skills: ['International clients', 'Multi-cultural', 'Diverse audiences'] },
+                  { emoji: '🤝', title: 'Collaboration', skills: ['Cross-functional', '95%+ satisfaction', 'Leadership'] },
+                  { emoji: '🚀', title: 'Results', skills: ['2.5M+ views', '128% growth', '25% lift'] }
+                ].map((card, i) => (
+                  <div key={i} className="flex-shrink-0 w-48 p-4 bg-white/5 rounded-lg hover:bg-white/10 transition-all">
+                    <div className="aspect-square bg-gradient-to-br from-green-400 to-blue-500 rounded-lg mb-4 flex items-center justify-center text-6xl">
+                      {card.emoji}
+                    </div>
+                    <div className="font-bold text-white mb-2">{card.title}</div>
+                    {card.skills.map((skill, j) => (
+                      <div key={j} className="text-sm text-white/70">• {skill}</div>
+                    ))}
+                  </div>
+                ))}
+                <a href="https://drive.google.com/drive/folders/1KLqC8VqN9YPxGzH0wZ7YqJXvN5h3Mm4I" target="_blank" className="flex-shrink-0 w-48 p-4 bg-gradient-to-br from-green-500 to-green-600 rounded-lg hover:from-green-400 hover:to-green-500">
+                  <div className="aspect-square bg-white/10 rounded-lg mb-4 flex items-center justify-center text-6xl">📄</div>
+                  <div className="text-white font-bold mb-2">View My Work</div>
+                  <div className="text-sm text-white/90">Marketing proposals →</div>
+                </a>
+              </div>
+            </div>
+            
+            {/* Why Spotify */}
+            <div className="mt-12 bg-white/5 rounded-lg p-8">
+              <h3 className="text-3xl font-bold mb-6">Why Spotify?</h3>
+              <div className="grid md:grid-cols-2 gap-8">
+                <div>
+                  <h4 className="text-xl font-bold mb-4 text-green-400">What I Love</h4>
+                  <ul className="space-y-3 text-white/80">
+                    <li className="flex items-start gap-3">
+                      <Check size={20} className="text-green-400 mt-1" />
+                      <span>Algorithm personalization that feels like magic</span>
+                    </li>
+                    <li className="flex items-start gap-3">
+                      <Check size={20} className="text-green-400 mt-1" />
+                      <span>Blends & Parties bringing people together</span>
+                    </li>
+                    <li className="flex items-start gap-3">
+                      <Check size={20} className="text-green-400 mt-1" />
+                      <span>Evolution from player to cultural curator</span>
+                    </li>
+                  </ul>
+                </div>
+                <div>
+                  <h4 className="text-xl font-bold mb-4 text-blue-400">What I Bring</h4>
+                  <ul className="space-y-3 text-white/80">
+                    <li className="flex items-start gap-3">
+                      <Check size={20} className="text-blue-400 mt-1" />
+                      <span><strong>User perspective:</strong> Power user who lives in the app</span>
+                    </li>
+                    <li className="flex items-start gap-3">
+                      <Check size={20} className="text-blue-400 mt-1" />
+                      <span><strong>Tech + Creative:</strong> CS background meets marketing passion</span>
+                    </li>
+                    <li className="flex items-start gap-3">
+                      <Check size={20} className="text-blue-400 mt-1" />
+                      <span><strong>Global perspective:</strong> Working with international clients</span>
+                    </li>
+                    <li className="flex items-start gap-3">
+                      <Check size={20} className="text-blue-400 mt-1" />
+                      <span><strong>Proven ability to surprise:</strong> Viral treasure hunt campaign</span>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+              <p className="mt-6 text-lg text-white/90 italic">
+                "I want to help artists and fans experience that same magic I feel every time I open Spotify. Whether it's launching the next superstar or discovering the next Billie Eilish, I want to be where music marketing meets cultural moments."
               </p>
+            </div>
+            
+            {/* Contact */}
+            <div className="mt-16 text-center">
+              <h3 className="text-4xl font-black mb-8">Let's Make Music Marketing Magic</h3>
               <div className="flex flex-col items-center gap-4 mb-8">
                 <div className="flex flex-wrap justify-center gap-4">
-                  <a
-                    href="mailto:ft2366@nyu.edu"
-                    className="px-8 py-4 bg-green-500 hover:bg-green-400 text-black font-bold rounded-full transition-all transform hover:scale-105 flex items-center gap-2"
-                  >
+                  <a href="mailto:ft2366@nyu.edu" className="px-8 py-4 bg-green-500 hover:bg-green-400 text-black font-bold rounded-full transition-all transform hover:scale-105 flex items-center gap-2">
                     <Mail size={20} />
                     ft2366@nyu.edu
                   </a>
-                  <a
-                    href="https://www.linkedin.com/in/tansintaj/"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="px-8 py-4 bg-white/10 hover:bg-white/20 border border-white/20 text-white font-bold rounded-full transition-all flex items-center gap-2"
-                  >
+                  <a href="https://www.linkedin.com/in/tansintaj/" target="_blank" className="px-8 py-4 bg-white/10 hover:bg-white/20 border border-white/20 text-white font-bold rounded-full transition-all flex items-center gap-2">
                     <Linkedin size={20} />
                     LinkedIn
                   </a>
                 </div>
-                
                 <div className="flex flex-wrap justify-center gap-4">
-                  <a 
-                    href="https://www.behance.net/gallery/206267425/Portfolio-2024"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="px-6 py-3 bg-white/5 hover:bg-white/10 border border-white/10 hover:border-green-500/50 text-white rounded-full transition-all flex items-center gap-2 text-sm"
-                  >
+                  <a href="https://www.behance.net/gallery/206267425/Portfolio-2024" target="_blank" className="px-6 py-3 bg-white/5 hover:bg-white/10 border border-white/10 hover:border-green-500/50 text-white rounded-full transition-all text-sm">
                     🎨 Behance
                   </a>
-                  <a 
-                    href="https://tansintaj.notion.site/Portfolio-2470ce15d94d806fa8b0fcb3ef00720c"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="px-6 py-3 bg-white/5 hover:bg-white/10 border border-white/10 hover:border-green-500/50 text-white rounded-full transition-all flex items-center gap-2 text-sm"
-                  >
+                  <a href="https://tansintaj.notion.site/Portfolio-2470ce15d94d806fa8b0fcb3ef00720c" target="_blank" className="px-6 py-3 bg-white/5 hover:bg-white/10 border border-white/10 hover:border-green-500/50 text-white rounded-full transition-all text-sm">
                     📋 Notion Portfolio
                   </a>
-                  <a 
-                    href="https://github.com/TansinTaj"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="px-6 py-3 bg-white/5 hover:bg-white/10 border border-white/10 hover:border-green-500/50 text-white rounded-full transition-all flex items-center gap-2 text-sm"
-                  >
+                  <a href="https://github.com/TansinTaj" target="_blank" className="px-6 py-3 bg-white/5 hover:bg-white/10 border border-white/10 hover:border-green-500/50 text-white rounded-full transition-all text-sm">
                     💻 GitHub
                   </a>
                 </div>
               </div>
-
               <div className="text-sm text-white/50">
                 <p>Crafted with 🎵 for Spotify Marketing Team</p>
               </div>
             </div>
           </div>
         </div>
-      </div>
-
-      {/* Bottom Player Bar */}
-      <div className="fixed bottom-0 left-0 right-0 bg-black border-t border-white/10 px-4 py-3 z-50">
-        <div className="flex items-center justify-between max-w-full">
-          {/* Now Playing */}
-          <div className="flex items-center gap-4 flex-1">
-            <div className="w-14 h-14 bg-gradient-to-br from-green-400 to-blue-400 rounded flex items-center justify-center text-xl font-bold">
-              T
-            </div>
-            <div>
-              <div className="text-sm font-medium">Handpicked for You</div>
-              <div className="text-xs text-white/70">ft2366@nyu.edu</div>
-            </div>
-            <button className="ml-4">
-              <Heart size={16} className="text-white/70 hover:text-white" />
-            </button>
-          </div>
-
-          {/* Player Controls */}
-          <div className="flex flex-col items-center gap-2 flex-1">
-            <div className="flex items-center gap-6">
-              <button className="text-white/70 hover:text-white">
-                <Shuffle size={16} />
-              </button>
-              <button className="text-white/70 hover:text-white">
-                <SkipBack size={20} />
-              </button>
-              <button className="w-8 h-8 bg-white rounded-full flex items-center justify-center hover:scale-105 transition-transform">
-                <Play fill="black" className="text-black ml-0.5" size={16} />
-              </button>
-              <button className="text-white/70 hover:text-white">
-                <SkipForward size={20} />
-              </button>
-              <button className="text-white/70 hover:text-white">
-                <Repeat size={16} />
-              </button>
-            </div>
-            <div className="flex items-center gap-2 w-full max-w-2xl">
-              <span className="text-xs text-white/70 w-10 text-right">0:00</span>
-              <div className="flex-1 h-1 bg-white/20 rounded-full overflow-hidden group cursor-pointer">
-                <div className="h-full bg-white group-hover:bg-green-400 w-0 transition-all"></div>
-              </div>
-              <span className="text-xs text-white/70 w-10">3:47</span>
-            </div>
-          </div>
-
-          {/* Volume & Options */}
-          <div className="flex items-center gap-4 flex-1 justify-end">
-            <button className="text-white/70 hover:text-white">
-              <List size={16} />
-            </button>
-            <button className="text-white/70 hover:text-white">
-              <Volume2 size={16} />
-            </button>
-            <div className="w-24 h-1 bg-white/20 rounded-full overflow-hidden cursor-pointer group">
-              <div className="h-full bg-white group-hover:bg-green-400 w-3/4"></div>
-            </div>
-            <button className="text-white/70 hover:text-white">
-              <Maximize2 size={16} />
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
+      );
+    }
+    
     const root = ReactDOM.createRoot(document.getElementById('root'));
-    root.render(<SpotifyMarketingApp />);
+    root.render(<SpotifyApp />);
   </script>
 </body>
 </html>
